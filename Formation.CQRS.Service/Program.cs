@@ -7,8 +7,12 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
+#pragma warning disable CS0579
+
 namespace Formation.CQRS.Service
 {
+    #pragma warning disable CS0579
+    
     public class Program
     {
         public static void Main(string[] args)

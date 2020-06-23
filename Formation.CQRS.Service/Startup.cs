@@ -9,6 +9,10 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
+
+using Steeltoe.CloudFoundry.Connector.PostgreSql.EFCore;
+using Formation.CQRS.Service.AccesLayer;
 
 namespace Formation.CQRS.Service
 {
@@ -24,6 +28,12 @@ namespace Formation.CQRS.Service
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            // Ajouter EFCore DbContext configuré pour PostgreSQL
+            services.AddDbContext<IGeoLocalisationContext, GeoLocalisationContext>(options => options.UseNpgsql(Configuration));
+            
+            // Ajouter Npgsql configuré pour Cloud Foundry
+            // services.AddEntityFrameworkNpgsql();
+
             services.AddControllers();
         }
 
