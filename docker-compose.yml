@@ -1,0 +1,40 @@
+version: "3.8"
+services:
+
+  rabbtimq:
+    image: rabbitmq:3
+    volumes:
+      - './.vol/rabbitmq/:/var/lib/rabbitmq'
+    ports:
+      - 5672:5672
+
+  # http://localhost:8081
+  # Username: guest
+  # Password: guest
+  rabbtimq-management:
+    image: rabbitmq:3-management
+    ports:
+      - 15671:15671
+      - 8081:15672
+
+  postgres-db:
+    image: postgres:12
+    restart: always
+    volumes:
+      - './.vol/postgresql/data:/var/lib/postgresql/data'
+    ports:
+      - 5432:5432
+    environment:
+      - POSTGRES_USER=root
+      - POSTGRES_PASSWORD=root_pwd
+
+  # http://localhost:8080
+  # Information de connection à postgres-db
+  # Server: postgres-db:5432
+  # Username: ${POSTGRES_USER}
+  # Password: ${POSTGRES_PASSWORD}
+  adminer:
+    image: adminer:latest
+    restart: always
+    ports:
+      - 8080:8080

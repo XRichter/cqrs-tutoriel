@@ -1,0 +1,10 @@
+applications:
+  - name: formation-cqrs-console
+    buildpacks: [dotnet_core_buildpack]
+    health-check-type: process
+    no-route: true
+    instances: 0
+    disk_quota: 512M
+    memory: 512M
+    command: sleep 120
+  

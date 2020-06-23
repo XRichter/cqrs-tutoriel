@@ -1,0 +1,9 @@
+# Dir
+.vscode/
+**/bin/
+**/obj/
+.vol/
+
+# Files
+*.code-workspace
+git.properties
