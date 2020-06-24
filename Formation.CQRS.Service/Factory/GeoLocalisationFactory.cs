@@ -75,17 +75,25 @@ namespace Formation.CQRS.Service.Factory
                 
                 var coord_depart = new GeoCoordinate(depart.latitude, depart.longitude);
                 var coord_arrive = new GeoCoordinate(arrive.latitude, arrive.longitude);
+
                 var distance = (float) coord_depart.GetDistanceTo(coord_arrive);
 
                 distance_total = distance_total + distance;
             }
 
-            return distance_total;
+            return (distance_total / 1000);
         }
 
         private float VitesseMoyenne(TimeSpan delais, double distance_total)
         {
-            return (float) (distance_total / 1000 / delais.TotalMinutes / 60);
+            var vitesse = (float) (distance_total / delais.TotalHours);
+
+            if (float.IsInfinity(vitesse))
+            {
+                vitesse = 0;
+            }
+
+            return vitesse;
         }
     }
 }
