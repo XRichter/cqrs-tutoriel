@@ -6,12 +6,23 @@
 
 <h2>Position actuelle (@Model.guid)</h2>
 
+@{
+    TimeSpan span = new TimeSpan(Model.delais_total);
+
+    var googleUrl = String.Format("https://www.google.ca/maps/place/{0}+{1}/@{2},{3},5z",
+                            System.Web.HttpUtility.UrlEncode(Model.latitudePretty()),
+                            System.Web.HttpUtility.UrlEncode(Model.longitudePretty()),
+                            Model.latitude,
+                            Model.longitude);
+}
+
 <ul>
     <li>date:               @Model.date</li>
     <li>latitude:           @Model.latitude</li>
     <li>longitude:          @Model.longitude</li>
-    <li>delais_total:       @Model.delais_total ticks</li>
+    <li>delais_total:       @span.ToString()</li>
     <li>distance_total:     @Model.distance_total km</li>
     <li>vitesse_moyenne:    @Model.vitesse_moyenne km/h</li>
-    <li><a href="https://www.google.ca/maps/@@@Model.latitude,@Model.longitude,15z">Voir sur google map</a></li>
+    @* <li><a href="https://www.google.ca/maps/@@@Model.latitude,@Model.longitude,5z">Voir sur google map</a></li> *@
+    <li><a href="@googleUrl">Voir sur google map</a></li>
 </ul>
