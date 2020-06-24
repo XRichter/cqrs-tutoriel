@@ -1,0 +1,14 @@
+﻿@model List<String>
+@{
+    ViewData["Title"] = "Geo Localisation";
+}
+<h1>@ViewData["Title"]</h1>
+
+<h2>Liste des appareils enregistrés.</h2>
+
+<ul>
+@foreach(var guid in Model)
+{
+    <li>@Html.ActionLink(guid, "Details", "GeoLocalisation", new { guid })</li>
+}
+</ul>

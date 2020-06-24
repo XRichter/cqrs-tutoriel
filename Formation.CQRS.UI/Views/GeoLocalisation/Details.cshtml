@@ -1,0 +1,17 @@
+@model Formation.CQRS.UI.Model.GeoLocalisationModel
+@{
+    ViewData["Title"] = "Geo Localisation";
+}
+<h1>@ViewData["Détails"]</h1>
+
+<h2>Position actuelle (@Model.guid)</h2>
+
+<ul>
+    <li>date:               @Model.date</li>
+    <li>latitude:           @Model.latitude</li>
+    <li>longitude:          @Model.longitude</li>
+    <li>delais_total:       @Model.delais_total ticks</li>
+    <li>distance_total:     @Model.distance_total km</li>
+    <li>vitesse_moyenne:    @Model.vitesse_moyenne km/h</li>
+    <li><a href="https://www.google.ca/maps/@@@Model.latitude,@Model.longitude,15z">Voir sur google map</a></li>
+</ul>

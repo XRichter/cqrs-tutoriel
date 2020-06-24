@@ -13,6 +13,7 @@ using Microsoft.Extensions.Options;
 
 using Steeltoe.CloudFoundry.Connector.PostgreSql.EFCore;
 using Formation.CQRS.Service.AccesLayer;
+using Formation.CQRS.Service.Factory;
 
 namespace Formation.CQRS.Service
 {
@@ -30,9 +31,8 @@ namespace Formation.CQRS.Service
         {
             // Ajouter EFCore DbContext configuré pour PostgreSQL
             services.AddDbContext<IGeoLocalisationContext, GeoLocalisationContext>(options => options.UseNpgsql(Configuration));
-            
-            // Ajouter Npgsql configuré pour Cloud Foundry
-            // services.AddEntityFrameworkNpgsql();
+
+            services.AddTransient<IGeoLocalisationFactory, GeoLocalisationFactory>();
 
             services.AddControllers();
         }

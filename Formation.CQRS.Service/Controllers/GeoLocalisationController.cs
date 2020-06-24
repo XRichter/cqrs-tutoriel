@@ -7,6 +7,7 @@ using Microsoft.Extensions.Logging;
 
 using Formation.CQRS.Service.AccesLayer;
 using Formation.CQRS.Service.Entity;
+using Formation.CQRS.Service.Factory;
 using Formation.CQRS.Service.Model;
 
 namespace Formation.CQRS.Service.Controllers
@@ -17,24 +18,30 @@ namespace Formation.CQRS.Service.Controllers
     {
         private readonly ILogger<GeoLocalisationController> _logger;
         private readonly IGeoLocalisationContext _context;
+        private readonly IGeoLocalisationFactory _factory;
 
-        public GeoLocalisationController(ILogger<GeoLocalisationController> logger, IGeoLocalisationContext context)
+        public GeoLocalisationController(ILogger<GeoLocalisationController> logger, IGeoLocalisationContext context, IGeoLocalisationFactory factory)
         {
             _logger = logger;
             _context= context;
+            _factory= factory;
         }
 
         [HttpGet]
-        public ActionResult<IEnumerable<GeoLocalisationEntity>> Get()
+        [Route("devices")]
+        public ActionResult<IEnumerable<string>> Get()
         {
-            return _context.GeoLocalisation;
+            return new OkObjectResult(_context.GetAllDevicesGuid());
         }
 
         [HttpGet]
-        [Route("{guid}")]
-        public ActionResult<IEnumerable<GeoLocalisationEntity>> Get(string guid)
+        [Route("device/{guid}")]
+        public GeoLocalisationModel Get(string guid)
         {
-            return new OkObjectResult(_context.GeoLocalisationByGuid(guid));
+            var entities = _context.GetDeviceGeoLocalisation(guid);
+            var model = _factory.FromEntities(entities);
+            
+            return model;
         }
 
         [HttpPost]
@@ -53,6 +60,5 @@ namespace Formation.CQRS.Service.Controllers
 
             return new OkResult();
         }
-
     }
 }

@@ -47,7 +47,15 @@ namespace Formation.CQRS.UI
                 endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "{controller=Home}/{action=Index}/{id?}");
+                endpoints.MapControllerRoute(
+                    name: "geo_a",
+                    pattern: "{controller=GeoLocalisation}/{action=Appareils}");
+                endpoints.MapControllerRoute(
+                    name: "geo_d",
+                    pattern: "{controller=GeoLocalisation}/{action=Details}/{guid}");
+                
             });
+
         }
     }
 }

@@ -11,13 +11,20 @@ namespace Formation.CQRS.Service.AccesLayer
 
         public DbSet<GeoLocalisationEntity> GeoLocalisation { get; set; }
 
-        public IEnumerable<GeoLocalisationEntity> GeoLocalisationByGuid(string guid)
+        public IEnumerable<string> GetAllDevicesGuid()
         {
-            var query = from t in this.GeoLocalisation
-                            where t.guid == guid 
-                            select t;
+            var query = this.GeoLocalisation
+                            .Select(geo => geo.guid)
+                            .Distinct();
 
-            return query;
+            return query.ToList();
+        }
+
+        public IEnumerable<GeoLocalisationEntity> GetDeviceGeoLocalisation(string guid)
+        {
+            var query = this.GeoLocalisation.Where(geo => geo.guid == guid);
+
+            return query.ToList();
         }
 
         public override int SaveChanges()

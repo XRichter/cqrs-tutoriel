@@ -9,6 +9,7 @@ namespace Formation.CQRS.Service.AccesLayer
         DbSet<GeoLocalisationEntity> GeoLocalisation { get; set; }
         int SaveChanges();
 
-        IEnumerable<GeoLocalisationEntity> GeoLocalisationByGuid(string guid);
+        IEnumerable<string> GetAllDevicesGuid();
+        IEnumerable<GeoLocalisationEntity> GetDeviceGeoLocalisation(string guid);
     }
 }
