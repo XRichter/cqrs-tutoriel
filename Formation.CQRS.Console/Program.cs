@@ -1,46 +1,98 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Net.Http;
+using System.Net.Http.Headers;
+using System.Text.Json;
 using System.Threading;
+using Formation.CQRS.Service.Model;
 
 namespace Formation.CQRS.Consoles
 {
     class Program
     {
+        private static bool _continueProc = true;
+
         // The ThreadProc method is called when the thread starts.
         // It loops ten times, writing to the console and yielding
         // the rest of its time slice each time, and then ends.
         public static void ThreadProc() {
-            for (int i = 0; i < 10; i++) {
-                Console.WriteLine("ThreadProc: {0}", i);
+
+            var guid = Guid.NewGuid();
+            int i = 0;
+
+            var rand = new Random();
+
+            float lat = (float) (rand.NextDouble() * 0.0002 - 0.0001);
+            float lon = (float) (rand.NextDouble() * 0.0002 - 0.0001);
+
+            var model = new GeoLocalisationModel
+            {
+                guid = guid.ToString(),
+                latitude = (float) (rand.NextDouble() * 180 - 90),
+                longitude = (float) (rand.NextDouble() * 180 - 90)
+            };
+            
+            while (_continueProc)
+            {
+                Console.WriteLine("ThreadProc: {0}:{1}", guid.ToString(), i++);
+
+                model.date = DateTime.Now;
+                model.latitude += lat;
+                model.longitude += lon;
+                
+                SendGeoLocalisation(model);
+
                 // Yield the rest of the time slice.
-                Thread.Sleep(0);
+                Thread.Sleep(100);
             }
-        }  
+        }
+
+        public static void SendGeoLocalisation(GeoLocalisationModel model)
+        {
+            HttpClient client = new HttpClient();
+            client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+            client.BaseAddress = new Uri("http://localhost:6001");
+            
+            HttpResponseMessage response;
+
+            using (client)
+            {
+                string contentData = JsonSerializer.Serialize(model);
+                using (StringContent httpContent = new StringContent(contentData, System.Text.Encoding.UTF8, "application/json"))
+                {
+                    response = client.PostAsync("/api/geolocalisation", httpContent).Result;
+                }
+            }
+        }
 
         static void Main(string[] args)
         {
-            System.Console.WriteLine("Hello foobar!");
-
-            Console.WriteLine("Main thread: Start a second thread.");
-            // The constructor for the Thread class requires a ThreadStart
-            // delegate that represents the method to be executed on the
-            // thread.  C# simplifies the creation of this delegate.
-            Thread t = new Thread(new ThreadStart(ThreadProc));
-
-            // Start ThreadProc.  Note that on a uniprocessor, the new
-            // thread does not get any processor time until the main thread
-            // is preempted or yields.  Uncomment the Thread.Sleep that
-            // follows t.Start() to see the difference.
-            t.Start();
-            //Thread.Sleep(0);
-
-            for (int i = 0; i < 4; i++) {
-                Console.WriteLine("Main thread: Do some work.");
-                Thread.Sleep(0);
+            var threadCount = 1;
+            if (args.Length > 0)
+            {
+                threadCount = Int32.Parse(args[0]);
             }
 
+            Console.WriteLine("Main thread: Start {0} threads.", threadCount);
+
+            var threadList = new List<Thread>();
+            for (var i = 0 ; i < threadCount; i++)
+            {
+                threadList.Add(new Thread(new ThreadStart(ThreadProc)));
+            }
+
+            threadList.ForEach(t => t.Start());
+
             Console.WriteLine("Main thread: Call Join(), to wait until ThreadProc ends.");
-            t.Join();
+
+            Console.ReadLine();
+
+            _continueProc = false;
+
+            threadList.ForEach(t => t.Join());
+
             Console.WriteLine("Main thread: ThreadProc.Join has returned.  Press Enter to end program.");
+
             Console.ReadLine();
         }
     }
