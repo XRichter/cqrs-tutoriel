@@ -51,7 +51,7 @@ namespace Formation.CQRS.Consoles
         {
             HttpClient client = new HttpClient();
             client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-            client.BaseAddress = new Uri("http://localhost:6001");
+            client.BaseAddress = new Uri("http://localhost:5100");
             
             HttpResponseMessage response;
 
