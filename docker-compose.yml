@@ -4,7 +4,7 @@ services:
   rabbtimq:
     image: rabbitmq:3
     volumes:
-      - './.vol/rabbitmq/:/var/lib/rabbitmq'
+      - 'mq_data:/var/lib/rabbitmq'
     ports:
       - 5672:5672
 
@@ -21,7 +21,7 @@ services:
     image: postgres:12
     restart: always
     volumes:
-      - './.vol/postgresql/data:/var/lib/postgresql/data'
+      - 'pg_data:/var/lib/postgresql/data'
     ports:
       - 5432:5432
     environment:
@@ -39,3 +39,7 @@ services:
     restart: always
     ports:
       - 8080:8080
+
+volumes: 
+  pg_data:
+  mq_data:
