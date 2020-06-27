@@ -29,7 +29,7 @@ namespace Formation.CQRS.Consoles
             {
                 guid = guid.ToString(),
                 latitude = (float) (rand.NextDouble() * 180 - 90),
-                longitude = (float) (rand.NextDouble() * 180 - 90)
+                longitude = (float) (rand.NextDouble() * 360 - 180)
             };
             
             while (_continueProc)
@@ -43,7 +43,7 @@ namespace Formation.CQRS.Consoles
                 SendGeoLocalisation(model);
 
                 // Yield the rest of the time slice.
-                Thread.Sleep(100);
+                Thread.Sleep(1000);
             }
         }
 
