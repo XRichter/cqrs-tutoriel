@@ -12,8 +12,11 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
 using Steeltoe.CloudFoundry.Connector.PostgreSql.EFCore;
+using Steeltoe.CloudFoundry.Connector.RabbitMQ;
 using Formation.CQRS.Service.AccesLayer;
 using Formation.CQRS.Service.Factory;
+using Formation.CQRS.Service.Handler;
+
 
 namespace Formation.CQRS.Service
 {
@@ -30,9 +33,14 @@ namespace Formation.CQRS.Service
         public void ConfigureServices(IServiceCollection services)
         {
             // Ajouter EFCore DbContext configuré pour PostgreSQL
-            services.AddDbContext<IGeoLocalisationContext, GeoLocalisationContext>(options => options.UseNpgsql(Configuration));
+            services.AddDbContext<IGeoLocalisationContext, GeoLocalisationContext>(options => options.UseNpgsql(Configuration), ServiceLifetime.Transient, ServiceLifetime.Transient);
 
             services.AddTransient<IGeoLocalisationFactory, GeoLocalisationFactory>();
+
+            // Add RabbitMQ ConnectionFactory configured from Cloud Foundry
+            services.AddRabbitMQConnection(Configuration, ServiceLifetime.Transient);
+
+            services.AddHostedService<GeoLocalisationMessageHandler>();
 
             services.AddControllers();
         }

@@ -45,16 +45,11 @@ namespace Formation.CQRS.Service.Controllers
         }
 
         [HttpPost]
+        [Obsolete("Remplacer par une file de message. Voir ")]
         public ActionResult Post([FromBody] GeoLocalisationModel model)
         {
-            var entity = new GeoLocalisationEntity
-            {
-                guid = model.guid,
-                date = model.date,
-                latitude = model.latitude,
-                longitude = model.longitude,
-            };
-
+            var entity = _factory.ToEntities(model);
+            
             _context.GeoLocalisation.Add(entity);
             _context.SaveChanges();
 
