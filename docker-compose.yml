@@ -37,3 +37,4 @@ services:
 
 volumes: 
   pg_data:
+  mq_data:
