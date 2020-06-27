@@ -12,6 +12,7 @@ using Microsoft.Extensions.Logging;
 using Formation.CQRS.UI.Models;
 using Formation.CQRS.UI.Model;
 using System.Text.Json;
+using Formation.CQRS.UI.Services;
 
 namespace Formation.CQRS.UI.Controllers
 {
@@ -20,51 +21,21 @@ namespace Formation.CQRS.UI.Controllers
         private const string SERVICE_URL = "service:url";
 
         private readonly ILogger<GeoLocalisationController> _logger;
-        private readonly IConfiguration _config;
 
-        public GeoLocalisationController(ILogger<GeoLocalisationController> logger, IConfiguration config)
+        public GeoLocalisationController(ILogger<GeoLocalisationController> logger)
         {
             _logger = logger;
-            _config = config;
         }
 
-        public IActionResult Appareils()
+        public IActionResult Appareils([FromServices] GetDevicesGuidCommand guidCmd)
         {
-            HttpClient client = new HttpClient();
-            client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-            client.BaseAddress = new Uri(_config.GetValue<string>(SERVICE_URL));
-            
-            HttpResponseMessage response;
-
-            using (client)
-            {
-                response = client.GetAsync("/api/geolocalisation/devices").Result;
-            }
-
-            var models = JsonSerializer.Deserialize<List<string>>(response.Content.ReadAsStringAsync().Result);
-
-            return View(models);
+            return View(guidCmd.GetDevicesGuid().Result);
         }
 
-        public IActionResult Details(string guid)
+        public IActionResult Details([FromServices] GetDeviceCommand deviceCmd, string guid)
         {
-            HttpClient client = new HttpClient();
-            client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-            client.BaseAddress = new Uri(_config.GetValue<string>(SERVICE_URL));
-            
-            HttpResponseMessage response;
-
-            using (client)
-            {
-                response = client.GetAsync("/api/geolocalisation/device/" + guid).Result;
-            }
-
-            var content = response.Content.ReadAsStringAsync().Result;
-            var models = JsonSerializer.Deserialize<GeoLocalisationModel>(content);
-
-            return View(models);
+            return View(deviceCmd.GetDevice(guid).Result);
         }
-
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()

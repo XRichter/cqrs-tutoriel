@@ -30,10 +30,35 @@ services:
   rabbtimq-management:
     image: rabbitmq:3-management
     volumes:
-        - 'mq_data:/var/lib/rabbitmq'
+      - 'mq_data:/var/lib/rabbitmq'
     ports:
       - 8081:15672
       - 5672:5672
+
+#   rabbtimq:
+#     image: steeltoeoss/rabbitmq:latest
+#     ports: 
+#       - '4369'
+#       - '5671'
+#       - '25672'
+#       - '5672:5672'
+
+#   hystrix:
+#     image: steeltoeoss/hystrix-dashboard:latest
+#     ports: 
+#       - '7979:7979'
+
+  # http://localhost:7979/hystrix-dashboard
+  hystrix:
+    image: kennedyoliveira/hystrix-dashboard:1.5.6
+    ports: 
+      - '7979:7979'
+
+  # http://localhost:8761/
+  eureka:
+    image: steeltoeoss/eureka-server:latest
+    ports: 
+      - '8761:8761'
 
 volumes: 
   pg_data:

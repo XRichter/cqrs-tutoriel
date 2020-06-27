@@ -4,4 +4,23 @@
     <TargetFramework>netcoreapp3.1</TargetFramework>
   </PropertyGroup>
 
+  <ItemGroup>
+    <!-- <PackageReference Include="Steeltoe.Common.Hosting" Version="2.4.4" /> -->
+    <!-- <PackageReference Include="Steeltoe.Extensions.Configuration.CloudFoundryCore" Version="2.4.4" /> -->
+    <PackageReference Include="Steeltoe.CircuitBreaker.HystrixCore" Version="2.4.4" />
+    <PackageReference Include="Steeltoe.CircuitBreaker.Hystrix.MetricsStreamCore" Version="2.4.4" />
+    <PackageReference Include="RabbitMQ.Client" Version="5.1.0" />
+    <PackageReference Include="Steeltoe.Common.Hosting" Version="2.4.4" />
+    <PackageReference Include="Steeltoe.Discovery.ClientCore" Version="2.4.4" />
+    <PackageReference Include="Steeltoe.Extensions.Configuration.CloudFoundryCore" Version="2.4.4" />
+  </ItemGroup>
+
+  <!-- <ItemGroup Condition="'$(BUILD)' == 'LOCAL'">
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(BUILD)' == ''">
+    <PackageReference Include="Steeltoe.CircuitBreaker.Hystrix.MetricsEventsCore" Version="2.4.4" />
+    <PackageReference Include="System.Threading.ThreadPool" Version="4.3.0" />
+  </ItemGroup> -->
+
 </Project>

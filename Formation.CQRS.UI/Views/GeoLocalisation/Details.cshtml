@@ -6,6 +6,7 @@
 
 <h2>Position actuelle (@Model.guid)</h2>
 
+
 @{
     TimeSpan span = new TimeSpan(Model.delais_total);
 
@@ -16,13 +17,19 @@
                             Model.longitude);
 }
 
-<ul>
-    <li>date:               @Model.date</li>
-    <li>latitude:           @Model.latitude</li>
-    <li>longitude:          @Model.longitude</li>
-    <li>delais_total:       @span.ToString()</li>
-    <li>distance_total:     @Model.distance_total km</li>
-    <li>vitesse_moyenne:    @Model.vitesse_moyenne km/h</li>
-    @* <li><a href="https://www.google.ca/maps/@@@Model.latitude,@Model.longitude,5z">Voir sur google map</a></li> *@
-    <li><a href="@googleUrl">Voir sur google map</a></li>
-</ul>
+@if(Model.id > 0)
+{
+    <ul>
+        <li>date:               @Model.date</li>
+        <li>latitude:           @Model.latitude</li>
+        <li>longitude:          @Model.longitude</li>
+        <li>delais_total:       @span.ToString()</li>
+        <li>distance_total:     @Model.distance_total km</li>
+        <li>vitesse_moyenne:    @Model.vitesse_moyenne km/h</li>
+        <li><a href="@googleUrl">Voir sur google map</a></li>
+    </ul>
+}
+else
+{
+    <div>Service non-disponible pour le moment. Veuillez réesayer plus tard.</div>
+}
