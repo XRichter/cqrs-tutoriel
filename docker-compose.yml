@@ -1,22 +1,6 @@
 version: "3.8"
 services:
 
-  rabbtimq:
-    image: rabbitmq:3
-    volumes:
-      - 'mq_data:/var/lib/rabbitmq'
-    ports:
-      - 5672:5672
-
-  # http://localhost:8081
-  # Username: guest
-  # Password: guest
-  rabbtimq-management:
-    image: rabbitmq:3-management
-    ports:
-      - 15671:15671
-      - 8081:15672
-
   postgres-db:
     image: postgres:12
     restart: always
@@ -39,6 +23,17 @@ services:
     restart: always
     ports:
       - 8080:8080
+
+  # http://localhost:8081
+  # Username: guest
+  # Password: guest
+  rabbtimq-management:
+    image: rabbitmq:3-management
+    volumes:
+        - 'mq_data:/var/lib/rabbitmq'
+    ports:
+      - 15672:15672
+      - 5672:5672
 
 volumes: 
   pg_data:
