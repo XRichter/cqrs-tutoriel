@@ -2,14 +2,18 @@
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Text;
 using System.Text.Json;
 using System.Threading;
 using Formation.CQRS.Service.Model;
+using RabbitMQ.Client;
 
 namespace Formation.CQRS.Consoles
 {
     class Program
     {
+        private const string EXCHANGE_NAME = "cqrs_xchange";
+        private const string ROUTING_KEY = "coordonnees";
         private static bool _continueProc = true;
 
         // The ThreadProc method is called when the thread starts.
@@ -29,7 +33,7 @@ namespace Formation.CQRS.Consoles
             {
                 guid = guid.ToString(),
                 latitude = (float) (rand.NextDouble() * 180 - 90),
-                longitude = (float) (rand.NextDouble() * 180 - 90)
+                longitude = (float) (rand.NextDouble() * 360 - 180)
             };
             
             while (_continueProc)
@@ -40,10 +44,10 @@ namespace Formation.CQRS.Consoles
                 model.latitude += lat;
                 model.longitude += lon;
                 
-                SendGeoLocalisation(model);
+                RaiseGeoLocalisationEvent(model);
 
                 // Yield the rest of the time slice.
-                Thread.Sleep(100);
+                Thread.Sleep(1000);
             }
         }
 
@@ -62,6 +66,35 @@ namespace Formation.CQRS.Consoles
                 {
                     response = client.PostAsync("/api/geolocalisation", httpContent).Result;
                 }
+            }
+        }
+
+        public static void RaiseGeoLocalisationEvent(GeoLocalisationModel model)
+        {
+            var factory = new ConnectionFactory() { HostName = "localhost", Port = 5672 };
+            using(var connection = factory.CreateConnection())
+            using(var channel = connection.CreateModel())
+            {
+                channel.ExchangeDeclare(
+                    exchange: EXCHANGE_NAME,
+                    type: ExchangeType.Direct,
+                    durable: true,
+                    autoDelete: false,
+                    arguments: null
+                );
+
+                var content = JsonSerializer.Serialize(model);
+                var body = Encoding.UTF8.GetBytes(content);
+                var properties = channel.CreateBasicProperties();
+
+                channel.BasicPublish(
+                    exchange: EXCHANGE_NAME,
+                    routingKey: ROUTING_KEY,
+                    basicProperties: null,
+                    body: body
+                );
+
+                Console.WriteLine("BasicPublish done");
             }
         }
 
