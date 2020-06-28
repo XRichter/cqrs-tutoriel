@@ -10,7 +10,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
 using Steeltoe.CircuitBreaker.Hystrix;
-using Steeltoe.Discovery.Client;
 
 namespace Formation.CQRS.UI
 {
@@ -31,9 +30,6 @@ namespace Formation.CQRS.UI
             // Ajouter la couche de communication http vers le service.
             services.AddSingleton<IGeoLocalisationService, GeoLocalisationService>();
 
-            // Add Steeltoe Discovery Client service
-            services.AddDiscoveryClient(Configuration);
-
             // Command Hystrix quie utilise le GeoLocalisationService
             services.AddHystrixCommand<GetDevicesGuidCommand>("GeoLocalisationService", Configuration);
             services.AddHystrixCommand<GetDeviceCommand>("GeoLocalisationService", Configuration);
@@ -42,7 +38,7 @@ namespace Formation.CQRS.UI
             services.AddMemoryCache();
 
             // Ajouter les metriques en continue Hystrix pour permettre le monitoring.
-            services.AddHystrixMetricsStream(Configuration);
+            // services.AddHystrixMetricsStream(Configuration);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -82,7 +78,7 @@ namespace Formation.CQRS.UI
             // });
 
             // Startup Hystrix metrics stream
-            app.UseHystrixMetricsStream();
+            // app.UseHystrixMetricsStream();
         }
     }
 }

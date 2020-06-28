@@ -7,10 +7,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
-using Steeltoe.Common.Hosting;
-using Steeltoe.Discovery.Client;
-using Steeltoe.Extensions.Configuration.CloudFoundry;
-
 namespace Formation.CQRS.UI
 {
     public class Program
@@ -25,9 +21,6 @@ namespace Formation.CQRS.UI
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder.UseStartup<Startup>();
-                })
-                .UseCloudHosting(5000)
-                .AddCloudFoundry()
-                .AddServiceDiscovery();
+                });
     }
 }
